@@ -1,0 +1,234 @@
+CREATE OR REPLACE FUNCTION refresh_eviction_counts() 
+RETURNS void AS $$
+    DECLARE
+        ev RECORD;
+        omi_count INT DEFAULT 0;
+        demo_count INT DEFAULT 0;
+        ellis_count INT DEFAULT 0;
+        total_count INT DEFAULT 0;
+    BEGIN
+        DROP TABLE IF EXISTS no_fault_counts;
+        CREATE TEMPORARY TABLE no_fault_counts
+        ON COMMIT DROP
+        AS SELECT
+            date_filed,
+            type,
+            COALESCE( SUM(units), 0 ) AS num_units,
+            0 AS omi_count_at_date,
+            0 AS ellis_count_at_date,
+            0 AS demo_count_at_date,
+            0 AS total_count_at_date
+        FROM
+            no_fault_dec_2014_with_counts
+        GROUP BY
+            date_filed,
+            type
+        ORDER BY date_filed ASC;
+          
+        FOR ev IN SELECT * FROM no_fault_counts LOOP
+            CASE ev.type 
+                WHEN 'OMI'   THEN omi_count   := omi_count   + ev.num_units;
+                WHEN 'DEMO'  THEN demo_count  := demo_count  + ev.num_units;
+                WHEN 'ELLIS' THEN ellis_count := ellis_count + ev.num_units;
+                ELSE
+            END CASE;
+            total_count := total_count + ev.num_units;
+             
+            UPDATE no_fault_counts
+            SET
+                omi_count_at_date   = omi_count,
+                ellis_count_at_date = ellis_count,
+                demo_count_at_date  = demo_count,
+                total_count_at_date = total_count
+            WHERE date_filed = ev.date_filed;
+        END LOOP;
+        
+        
+        UPDATE no_fault_dec_2014_with_counts
+        SET 
+            omi_count_at_date   = no_fault_counts.omi_count_at_date,
+            ellis_count_at_date = no_fault_counts.ellis_count_at_date,
+            demo_count_at_date  = no_fault_counts.demo_count_at_date,
+            total_count_at_date = no_fault_counts.total_count_at_date
+        FROM no_fault_counts
+        WHERE no_fault_dec_2014_with_counts.date_filed = no_fault_counts.date_filed;
+    END;
+$$
+LANGUAGE 'plpgsql';
+
+SELECT refresh_eviction_counts();
+
+
+___
+
+CREATE OR REPLACE FUNCTION refresh_eviction_counts() 
+RETURNS void AS $$
+    DECLARE
+        ev RECORD;
+        omi_count INT DEFAULT 0;
+        demo_count INT DEFAULT 0;
+        ellis_count INT DEFAULT 0;
+		roommate_count INT DEFAULT 0;
+		lead_remediation_count INT DEFAULT 0;
+		condo_count INT DEFAULT 0;
+		fault_count INT DEFAULT 0;
+	    total_count INT DEFAULT 0;
+	
+    BEGIN
+        DROP TABLE IF EXISTS sf_evictions;
+        CREATE TABLE sf_evictions
+    
+        AS SELECT
+            date_filed,
+            type,
+            COALESCE( SUM(units), 0 ) AS num_units,
+            0 AS omi_count_at_date,
+            0 AS ellis_count_at_date,
+            0 AS demo_count_at_date,
+ 			0 AS roommate_count_at_date,
+            0 AS lead_remediation_count_at_date,
+            0 AS fault_count_at_date,
+            0 AS condo_count_at_date,
+            0 AS total_count_at_date
+
+
+        FROM
+            sf_evictions_with_counts
+        GROUP BY
+            date_filed,
+            type
+        ORDER BY date_filed ASC;
+          
+        FOR ev IN SELECT * FROM sf_evictions_counts LOOP
+            CASE ev.type 
+                WHEN 'OMI'   THEN omi_count   := omi_count   + ev.num_units;
+                WHEN 'DEMO'  THEN demo_count  := demo_count  + ev.num_units;
+                WHEN 'ELLIS' THEN ellis_count := ellis_count + ev.num_units;
+ 				WHEN 'condo'   THEN condo_count   := condo_count   + ev.num_units;
+                WHEN 'fault'  THEN fault_count  := fault_count  + ev.num_units;
+                WHEN 'roommate' THEN roommate_count := roommate_count + ev.num_units;
+               WHEN 'lead remediation' THEN lead_remediation_count := lead_remediation_count + ev.num_units;
+                ELSE
+            END CASE;
+            total_count := total_count + ev.num_units;
+             
+            UPDATE sf_evictions
+            SET
+                omi_count_at_date = omi_count,
+                ellis_count_at_date = ellis_count,
+                demo_count_at_date  = demo_count,
+   				fault_count_at_date = fault_count,
+                roommate_count_at_date = roommate_count,
+                lead_remediation_count_at_date  = lead_remediation_count,
+               	condo_count_at_date  = condo_count,
+				total_count_at_date = total_count
+            WHERE date_filed = ev.date_filed;
+        END LOOP;
+        
+        
+        UPDATE sf_evictions_with_counts
+        SET 
+            omi_count_at_date   = sf_evictions.omi_count_at_date,
+            ellis_count_at_date = sf_evictions.ellis_count_at_date,
+            demo_count_at_date  = sf_evictions.demo_count_at_date,
+            roommate_count_at_date   = sf_evictions.roommate_count_at_date,
+            condo_count_at_date = sf_evictions.condo_count_at_date,
+            lead_remediation_count_at_date  = sf_evictions.lead_remediation_count_at_date,
+       		fault_count_at_date  = sf_evictions.fault_count_at_date,
+            total_count_at_date = sf_evictions.total_count_at_date
+        FROM sf_evictions
+        WHERE sf_evictions_with_counts.date_filed = sf_evictions.date_filed;
+    END;
+$$
+LANGUAGE 'plpgsql';
+
+SELECT refresh_eviction_counts();
+
+
+
+
+CREATE OR REPLACE FUNCTION refresh_eviction_counts() 
+RETURNS void AS $$
+    DECLARE
+        ev RECORD;
+        omi_count INT DEFAULT 0;
+        demo_count INT DEFAULT 0;
+        ellis_count INT DEFAULT 0;
+		roommate_count INT DEFAULT 0;
+		lead_remediation_count INT DEFAULT 0;
+		condo_count INT DEFAULT 0;
+		fault_count INT DEFAULT 0;
+	    total_count INT DEFAULT 0;
+	
+    BEGIN
+        DROP TABLE IF EXISTS sf_evictions;
+        CREATE TABLE sf_evictions
+    
+        AS SELECT
+            date_filed,
+            type,
+            COALESCE( SUM(units), 0 ) AS num_units,
+            0 AS omi_count_at_date,
+            0 AS ellis_count_at_date,
+            0 AS demo_count_at_date,
+ 			0 AS roommate_count_at_date,
+            0 AS lead_remediation_count_at_date,
+            0 AS fault_count_at_date,
+            0 AS condo_count_at_date,
+            0 AS total_count_at_date
+
+
+        FROM
+            sf_evictions_2015
+        GROUP BY
+            date_filed,
+            type
+        ORDER BY date_filed ASC;
+          
+        FOR ev IN SELECT * FROM sf_evictions LOOP
+            CASE ev.type 
+                WHEN 'OMI'   THEN omi_count   := omi_count   + ev.num_units;
+                WHEN 'DEMO'  THEN demo_count  := demo_count  + ev.num_units;
+                WHEN 'ELLIS' THEN ellis_count := ellis_count + ev.num_units;
+ 				WHEN 'condo'   THEN condo_count   := condo_count   + ev.num_units;
+                WHEN 'fault'  THEN fault_count  := fault_count  + ev.num_units;
+                WHEN 'roommate' THEN roommate_count := roommate_count + ev.num_units;
+               WHEN 'lead remediation' THEN lead_remediation_count := lead_remediation_count + ev.num_units;
+                ELSE
+            END CASE;
+            total_count := total_count + ev.num_units;
+             
+            UPDATE sf_evictions
+            SET
+                omi_count_at_date = omi_count,
+                ellis_count_at_date = ellis_count,
+                demo_count_at_date  = demo_count,
+   				fault_count_at_date = fault_count,
+                roommate_count_at_date = roommate_count,
+                lead_remediation_count_at_date  = lead_remediation_count,
+               	condo_count_at_date  = condo_count,
+				total_count_at_date = total_count
+            WHERE date_filed = ev.date_filed;
+        END LOOP;
+        
+        
+        UPDATE sf_evictions_2015
+        SET 
+            omi_count_at_date   = sf_evictions.omi_count_at_date,
+            ellis_count_at_date = sf_evictions.ellis_count_at_date,
+            demo_count_at_date  = sf_evictions.demo_count_at_date,
+            roommate_count_at_date   = sf_evictions.roommate_count_at_date,
+            condo_count_at_date = sf_evictions.condo_count_at_date,
+            lead_remediation_count_at_date  = sf_evictions.lead_remediation_count_at_date,
+       		fault_count_at_date  = sf_evictions.fault_count_at_date,
+            total_count_at_date = sf_evictions.total_count_at_date
+        FROM sf_evictions
+        WHERE sf_evictions_2015.date_filed = sf_evictions.date_filed;
+    END;
+$$
+LANGUAGE 'plpgsql';
+
+SELECT refresh_eviction_counts();
+
+
+
