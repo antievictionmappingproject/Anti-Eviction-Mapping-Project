@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+     <meta charset="utf-8">
+    <!--Edit the title of the page-->
+   <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-46758541-1', 'antievictionmappingproject.net');
+  ga('send', 'pageview');
+
+</script>
+<!--[if !(lt IE 8)]><!-->
+   <script type="text/javascript">
+     (function(){var e=document.createElement("script");e.type="text/javascript";e.async=true;e.src=document.location.protocol+"//d1agz031tafz8n.cloudfront.net/thedaywefightback.js/widget.min.js";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)})()
+   </script>
+    <meta name="description" content="Santa Monica Ellis Act Evictions Mapped by the Anti-Eviction Mapping Project.">
+    <meta name="author" content="Anti-Eviction Mapping Project">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="//libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.css" />
+    <!--[if lte IE 8]>
+      <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.ie.css" />
+    <![endif]-->
+    <!--Switch between the different themes changing the stylesheet below - light-theme.css |dark-theme.css -->
+    <link rel="stylesheet" href="css/light-theme.css">
+    <link rel="stylesheet" href="css/makeitresponsive.css">
+    <title>Santa Monica Ellis Act Evictions - Anti-Eviction Mapping Project</title>
+    <link rel="stylesheet" href="css/jquery-ui.min.css">
+    <script src="//d3js.org/d3.v2.min.js?2.9.3"></script>
+    <script src="//libs.cartocdn.com/cartodb.js/v2/cartodb.js"></script>
+    <script src="js/jquery.ui.core.js"></script>
+    <script src="js/jquery.ui.widget.js"></script>
+    <script src="js/jquery.ui.mouse.js"></script>
+    <script src="js/jquery.ui.slider.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+    <script src="//cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+     <script src="js/santa_monica_ellis.js"></script>
+<!--[if lte IE 8]>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
+<![endif]-->
+<style type="text/css">
+  #apDiv1 {
+	position:absolute;
+	width:300px;
+	height:200px;
+	z-index:21;
+	left: 3px;
+	top: 3px;
+	visibility: hidden;
+}
+  </style>
+
+  <style type="text/css">
+    html, body, #map {
+      position: relative;
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+
+    .toolbar {
+      position: absolute;
+      bottom: 0px;
+      right: 0px;
+      background-color: rgba(255, 255, 255, 0.8);
+      font: 30px "Helvetica Neue";
+
+      width: 100%;
+    }
+
+    #timeline{
+      margin-bottom: 40px;
+      width:100%;
+      float:left;
+    }
+
+    .timeline-element{
+      display:block;
+      float:left;
+     
+    }
+
+    #evictionCount{
+      font: 18px "Helvetica Neue";
+      height: 60px;
+      width: 400px;
+      display:block;
+      float:right;
+
+    }
+  
+    .tooltip{
+      color:#fff;
+      background-color:#000;
+      opacity:0.7;
+      padding-right: 10px;
+      padding-left: 10px;
+      padding-top: 4px;
+      padding-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: +1px;
+    }
+   
+    path {
+      fill: #f00;
+      fill-opacity: .5;
+      stroke: #fff;
+      stroke-width: 1.5px;
+    }
+
+     #counter{
+      color:#000000;
+      font-family: "Helvetica Narrow","Arial Narrow",Tahoma,Arial,Helvetica;
+      letter-spacing: -1px;
+      
+    }
+
+    #play{
+    width:30px;
+    height:30px;
+    cursor:pointer;
+     vertical-align: middle;
+     background-image:url('images/pause.png');
+     
+    }
+
+    #slider{
+      width: 65%;
+      height: 14px;
+      top:8px;
+   z-index: 20;
+   margin-left:5px;
+   
+    }
+
+    circle {
+      fill: #f30;
+      stroke-width: 0.5px;
+      fill-opacity: 0.8;
+      stroke: #FFF;
+  }
+
+  .center {
+    stroke-width: 8px;
+    stroke-opacity: 0.3;
+    fill: #000;
+    stroke: #F30;
+  }
+ 
+    </style>
+  </head>
+  <body>
+  <div id="apDiv1"><img src="Santa Monica Ellis.png" width="300" height="200" alt="ellis act evictions"></div>
+	  
+<div id = "map"></div>
+<div class="sidepanel">
+   <div class="wrapper">
+        <p></p>
+        <h1>ELLIS ACT <br>
+<br>
+EVICTIONS</h1>
+         
+        <h3 id="runningTotal">  <div id="counter" style="color: #ff3300; font-size:80px; opacity:0.9 " > 0</div><br>Santa Monica households forced out of their homes, <br>
+        <span id="date"> </span> </h3>
+         <div id = "timeline">
+      <div id="play" class="timeline-element"></div>
+       <div id="slider" class="timeline-element"></div>
+       
+     </div>
+  <p> 
+	
+   		<p>Since the Ellis Act was enacted in 1986 in Sacramento, giving property owners the right to exit the rental business, thousands of rent controlled units have been lost in Santa Monica. Coupled with the passage of the Costa-Hawkins Rental Housing Act in 1999, allowing owners to raise the rents of rent-controlled units when tenants relocate or are evicted for non-payment, real affordable housing is under constant threat. </p>
+        
+        <p>The <a href="//pnasantamonica.org/" target="new">Pico Neighborhood Association (PNA)</a> in partnership with the <a href="//www.smgov.net/Departments/Rent_Control/About_the_Rent_Control_Board/Meet_the_Board.aspx" target="new">Rent Control Board</a> of Santa Monica and the <a href="//www.antievictionmmap.com" target="new">Anti-Eviction Mapping Project</a> have put together a map illustrating the impact of the Ellis Act since it’s passage, on Santa Monica over time.</p>     
+       <p> 
+        <iframe src="//infogr.am/santa_monica_ellis_act_evictions?src=embed" width="395" height="890" scrolling="no" frameborder="0" style="border:none;"></iframe>
+</p>
+	   </p>
+<p>Presently, the pressures of gentrification along the designated transit corridor using Transit Oriented Development (“TOD”) plans has already pushed many low-income families out of their rental units, the most egregious example is Village Trailer Park, that resulted in more than 100 rent controlled units and the displacement of dozens of long- time elderly residents of Santa Monica. Unfortunately, with the increase in property values and market pressures in Santa Monica along with TOD, we expect that there will be increase in evictions and resident displacement which will no doubt continue the elimination of rent controlled apartments.</p>
+
+<p>We are beginning to experience the negative impact of TOD and over-development on renters, in particular low-income communities alongside the transit corridors.  The result of the displacement of low-income households undermines the goal of reducing automobile use and creates an unintended consequence of pushing out low-income families that are the most reliable users of public transportation.</p>
+
+<p>Feeling the real pressure of accelerated development, gentrification and resident displacement, the <a href="https://pnasantamonica.org/" target="new">PNA</a> launched the: <a href="//www.surfsantamonica.com/ssm_site/the_lookout/letters/Letters-2014/06_11_2014_Opinion_Better_Neighborhoods.html" target="new">Better Neighborhoods, Same Neighbors: Anti-Resident Displacement Campaign</a>. The goal of the campaign is to monitor evictions, inform residents of their rights and discuss possible solutions within the upcoming zoning ordinance update and most importantly establish unity and solidarity among residents in pushing back the City staff’s effort to approve development projects that will destroy our City’s character and diversity.</p>
+	
+	
+<div class="context footer">
+       
+      <p>Map created by <a href="//www.antievictionmap.com">Anti-Eviction Mapping Project</a></p>
+          <p>Powered by <a href="//d3js.org/">D3</a>, <a href="//leafletjs.com/">Leaflet</a> and <a href="//carto.com/"> Carto</a></p>
+	   </div>        
+    <script type="text/javascript">
+   </script>
+ </div> 
+</div> 
+  </body>
+</html>
